@@ -48,31 +48,80 @@ public class Scratch {
 
                 case 2:
                  displayStaffs(staffs,count);
-                 break;
-            }
+                 System.out.println("Actions: ");
+                 System.out.println("1. Deactivate a Staff Account");
+                 System.out.println("2. Reset Staff Password");
+                 System.out.println("3. Back to Manage Staff Menu: ");
+                 int actions = input.nextInt();
 
+                 if (actions==1){
+                     input.nextLine();
+                     deactivateAcc(staffs,input,count);
+                 }
+                 else if (actions==2) {
+                     input.nextLine();
+                     resetPassword(staffs,input,count);
+                 }
+                    break;
+            }
         }
     }
 
-    public static void displayStaffs(String[][] staffs, int count){
-        String[] headers = {"#", "Username", "Status", "Last Login"};
-
-        for (String header:headers){
-            System.out.print(header + "\t");
+    public static void displayStaffs(String[][] staffs, int count) {
+        System.out.printf("%-4s %-15s %-10s %-20s%n", "#", "Username", "Status", "Last Login");
+        for (int i = 0; i < count; i++) {
+            System.out.printf("%-4d %-15s %-10s %-20s%n", (i + 1), staffs[i][0], staffs[i][2], staffs[i][3]);
         }
+    }
 
-        System.out.println();
+    public static void deactivateAcc (String[][] staffs, Scanner input, int count){
+        System.out.print("Enter staff username to deactivate: ");
+        String username = input.nextLine();
+        boolean userFound = false;
         for (int i=0; i<count; i++){
-            System.out.print((i+1) + "\t");
-            for (int j=0; j<staffs[i].length; j++){
-            if (j==1){
-                continue;
+            if (Objects.equals(username, staffs[i][0])) {
+                System.out.println("Confirm account deactivation y/n");
+                String confirm = input.nextLine();
+                if (confirm.equalsIgnoreCase("y")) {
+                    staffs[i][2] = "Inactive";
+                    System.out.println("Staff account " + staffs[i][0] + " has been successfully deactivated.");
+                }
+                userFound = true;
+                break;
             }
-                System.out.print(staffs[i][j] + "\t");
-            }
-            System.out.println();
+        }
+        if (!userFound){
+            System.out.println("User not found. ");
         }
     }
+
+    public static void resetPassword(String[][] staffs, Scanner input, int count) {
+        System.out.print("Enter staff username to reset password: ");
+        String username = input.nextLine();
+        boolean userFound = false;
+
+        for (int i = 0; i < count; i++) {
+            if (Objects.equals(username, staffs[i][0])) {
+                userFound = true;
+                while (true) {
+                    System.out.println("New password for [" + staffs[i][0] + "]: ");
+                    String newPassword = input.nextLine();
+                    System.out.print("Confirm password: ");
+                    String confirmPassword = input.nextLine();
+                    if (!Objects.equals(confirmPassword, newPassword)) {
+                        System.out.println("Passwords don't match. Please try again.");
+                    } else {
+                        staffs[i][1] = newPassword;
+                        System.out.println("Password for [" + staffs[i][0] + "] has been successfully reset.");
+                        return;
+                    }
+                }
+            }
+        }
+        if (!userFound) {
+            System.out.println("User not found.");
+        }
+    }
+
 
 }
-
